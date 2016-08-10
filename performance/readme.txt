@@ -1,12 +1,12 @@
+运行：
+python /your_dir/monkey_android/performance/monkey/monkey_server.py
 
-Requirement:
-1, MySQLdb
-2, adb
+依赖:
+1, adb
 
-
-2016-01-15
-1, get and store performance info (cpu, memory) into MySQL database
-2, surport multiple devices
-
-
-
+功能:
+2016-08-10
+1、完全自动，出现崩溃自动重启，重新开始
+2、可以连接多个设备
+3、可以随时断开设备、插入新设备，每5s定时检测设备自动运行
+4、崩溃后，发送邮件，包括内容：执行时长、crash log
