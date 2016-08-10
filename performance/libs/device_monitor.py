@@ -1,9 +1,9 @@
 #! /usr/bin/python
 # coding: utf-8
 
-from __future__ import print_function
 import time
-import os, sys
+import os
+import sys
 import logging
 
 if __name__ == '__main__':
