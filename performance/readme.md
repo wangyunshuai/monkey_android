@@ -13,3 +13,6 @@
 ###运行:
 1. 执行命令 `python /your_dir/monkey_android/performance/monkey/monkey_server.py`
 2. 连接手机
+
+###邮件截图:
+<img alt="summary" src="https://github.com/wangyunshuai/monkey_android/blob/master/performance/img/mail.png">
