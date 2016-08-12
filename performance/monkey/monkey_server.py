@@ -6,11 +6,10 @@ import sys
 import logging
 import traceback
 
-if __name__ == '__main__':
-    project_dir = os.path.split(os.getcwd())
-    project_dir = os.path.split(project_dir[0])
-    sys.path.append(project_dir[0])
-    os.chdir(project_dir[0])    # 将项目所在文件夹设置为 wkdir (目录下必须有 __init__.py 文件)
+project_dir = os.path.split(sys.path[0])
+project_dir = os.path.split(project_dir[0])
+sys.path.append(project_dir[0])
+os.chdir(project_dir[0])    # 将项目所在文件夹设置为 wkdir (目录下必须有 __init__.py 文件)
 
 from performance.config.config import Config
 from performance.libs.device_monitor import monitor_device
