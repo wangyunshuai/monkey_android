@@ -25,23 +25,26 @@ class Config:
 ```
 
 ###运行
+
 1. 执行命令 `
-```shell
-python /your_location/monkey_android/performance/monkey/monkey_server.py`
-```
+    ```shell
+    python /your_location/monkey_android/performance/monkey/monkey_server.py`
+    ```
 2. 连接手机
 
 ###关闭monkey
-1.停掉monkey_server或当前电脑没有正在运行的 monkey_server
-2.运行monkey_stop
-```shell
-python /your_location/monkey_android/performance/monkey/monkey_stop.py`
-```
-3.或连接一台没有monkey_server 的电脑，执行重启手机
-```shell
-adb shell reboot
-```
 
+1. 停掉monkey_server或当前电脑没有正在运行的 monkey_server
+2. 运行monkey_stop
+
+    ```shell
+    python /your_location/monkey_android/performance/monkey/monkey_stop.py`
+    ```
+3. 或连接一台没有monkey_server 的电脑，执行重启手机
+    ```shell
+    adb shell reboot
+    ```
+    
 
 
 ###邮件截图
