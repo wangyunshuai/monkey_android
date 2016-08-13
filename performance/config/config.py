@@ -36,7 +36,7 @@ class Config:
     if platform.system() == 'Darwin':
         adb = adb_location
     elif platform.system() == 'Windows':
-        adb = 'adb'
+        adb = 'adb '
     device_dict = {}
     thread_instances = []
     thread_instances_monkey = []
