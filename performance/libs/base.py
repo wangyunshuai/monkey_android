@@ -47,18 +47,22 @@ def get_device_info():
         os.system('adb devices > devices.txt')
         fp = open('devices.txt')
         lines = fp.readlines()
-        dviceUdid = []
+
         fp.close()
         for el in lines[1:-1]:
-            list = re.split('\\t',el)
+            list = re.split('\t',el)
             device_id_list.append(list[0])
             
     if len(device_id_list) == 0:
         logging.info('All device lost')
     else:
-        
+        if is_mac():
+            device_model = "Darwin-"
+        elif is_win():
+            device_model = "Windows-"
+
         for device_id in device_id_list:
-            device_model = "Darwin"
+
             get_device_model_cmd = "%s -s %s shell getprop ro.product.model" % (adb, device_id)
             logging.info(get_device_model_cmd)
             if is_mac():
