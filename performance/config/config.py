@@ -29,9 +29,9 @@ class Config:
     package_name = "com.testerhome.nativeandroid"
     adb_location = '/Users/smzdm/Documents/01_Android/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb'
     mail_host = "smtp.163.com"  # 设置邮箱服务器
-    mail_user = "yunswang@163.com"  # 邮箱用户名
-    mail_pass = "wangjianhui"  # 邮箱密码
-    mail_to_list = ['yunswang@163.com'] # 发送给收件人
+    mail_user = "xxxxx@163.com"  # 邮箱用户名
+    mail_pass = "xxxxx"  # 邮箱密码
+    mail_to_list = ['xxxxx@163.com'] # 发送给收件人
 
     if platform.system() == 'Darwin':
         adb = adb_location
