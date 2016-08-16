@@ -17,7 +17,7 @@ from performance.libs.device_monitor import monitor_device
 config = Config()
 
 def run():
-    logging.info('start')
+    logging.info('start server')
     monitor_device()
 
 if __name__ == '__main__':

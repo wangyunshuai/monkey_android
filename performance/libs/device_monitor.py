@@ -23,12 +23,15 @@ def monitor_device():
         current_device_dict = {}
         new_device_dict = {}
         current_device_dict = get_device_info()
+        logging.debug('current device dict: %s' % current_device_dict)
+        logging.debug('Config.device_dict is %s' % Config.device_dict)
         if current_device_dict != Config.device_dict:
             for device_model, device_id in current_device_dict.iteritems():
                 if device_model not in Config.device_dict:
                     new_device_dict.update({device_model: device_id})
+
             if new_device_dict != {}:
-                logging.info("found new device")
+                logging.debug('new device dict is: %s' % new_device_dict)
             else:
                 logging.info('device lost')
             Config.device_dict = current_device_dict

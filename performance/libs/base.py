@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, platform, commands
-import subprocess
+import os
+import platform
+import commands
 import sys
-import re
 import logging
+import subprocess
+import traceback
 
 if __name__ == '__main__':
     project_dir = os.path.split(os.getcwd())
@@ -21,66 +23,89 @@ sys.setdefaultencoding('utf-8')
 config = Config()
 adb = config.adb
 
-def is_mac():
-    return platform.system() == 'Darwin'
-
-def is_win():
-    return platform.system() == 'Windows'
-
-def get_device_info():
+def get_info_from_mac():
     '''返回 device id 和 device model'''
     device_dict = {}
-    device_id_list = []
-    if is_mac():
-        get_device_id_cmd = "%s devices | grep '\tdevice'" % adb
-        # logging.info(adb_cmd)
-        (status, output) = commands.getstatusoutput(get_device_id_cmd)
-        # logging.info(output)
+    get_device_id_cmd = "%s devices | grep '\tdevice'" % adb
+    (status, output) = commands.getstatusoutput(get_device_id_cmd)
+    # logging.info(output)
+    if output == '':
+        logging.info('All device lost')
+    else:
         output = output.split("\n")
         # logging.info(output)
-        
+        device_id_list = []
         for device_id in output:
             device_id = device_id.replace("\tdevice", "")
             device_id_list.append(device_id)
         # logging.info(device_id_list)
-    elif is_win():
-        os.system('adb devices > devices.txt')
-        fp = open('devices.txt')
-        lines = fp.readlines()
-        dviceUdid = []
-        fp.close()
-        for el in lines[1:-1]:
-            list = re.split('\\t',el)
-            device_id_list.append(list[0])
-            
-    if len(device_id_list) == 0:
-        logging.info('All device lost')
-    else:
-        
+
         for device_id in device_id_list:
-            device_model = "Darwin"
+            device_model = ""
             get_device_model_cmd = "%s -s %s shell getprop ro.product.model" % (adb, device_id)
-            logging.info(get_device_model_cmd)
-            if is_mac():
-                (status, output) = commands.getstatusoutput(get_device_model_cmd)
-            elif is_win():
-                output = subprocess.check_output(get_device_model_cmd, shell=True)
-            output = output.strip('\n')
+            # logging.info(get_device_model_cmd)
+            (status, output) = commands.getstatusoutput(get_device_model_cmd)
+            # logging.info("'%s'" %output)
             output = output.strip("\r") # 去除行尾的换行光标
             output = output.split(" ")
-            logging.info("'%s'" %output)
             for i in output:
-                device_model += i.strip('\n').strip('\r\r')
-            logging.info("'%s'" %device_model)
+                device_model += i
+            # logging.info("'%s'" %device_model)
             device_dict.update({device_model: device_id})
-        logging.info(device_dict)
+        logging.debug("get the device info: %s" % device_dict)
     return device_dict
 
+def get_info_from_win():
+    '''返回 device model 和 device id'''
+    device_dict = {}
+    get_device_id_cmd = "%s devices | findstr /e device" % adb   # /e 对一行的结尾进行匹配
+    try:
+        output = subprocess.check_output(get_device_id_cmd, shell=True)
+        logging.debug('connected devices:\r%s' % output)
+    except Exception:
+        # traceback.print_exc()
+        logging.info("All device lost")
+        output = None
+    if output is not None:
+        output = output.split("\n")
+        logging.debug('split connect devices id: %s' % output)
+        device_id_list = []
+        for device_id in output:
+            if 'device' in device_id:
+                logging.debug('get device: %s' % device_id)
+                device_id = device_id.replace("\tdevice\r", "")
+                device_id_list.append(device_id)
+        logging.debug('got devices id: %s' % device_id_list)
+
+        for device_id in device_id_list:
+            device_model = ""
+            get_device_model_cmd = "%s -s %s shell getprop ro.product.model" % (adb, device_id)
+            # logging.info(get_device_model_cmd)
+            try:
+                output_model = subprocess.check_output(get_device_model_cmd, shell=True)
+                logging.debug("'%s'" % output_model)
+            except Exception:
+                logging.error('get device model error')
+                traceback.print_exc()
+                output_model = None
+            if output_model is not None:
+                output_model = output_model.strip("\r\r\n") # 去除行尾的换行光标
+                logging.debug(output_model)
+                output_model = output_model.split(' ')
+            for i in output_model:
+                device_model += i
+            # logging.info("'%s'" %device_model)
+            device_dict.update({device_model: device_id})
+        logging.debug("get the device info: %s" % device_dict)
+    return device_dict
+
+def get_device_info():
+    if platform.system() == "Darwin":
+        return get_info_from_mac()
+    elif platform.system() == "Windows":
+        return get_info_from_win()
+
 if __name__ == '__main__':
-    a = get_device_info()
-    logging.info(a)
+    get_device_info()
     pass
-
-
-
 
