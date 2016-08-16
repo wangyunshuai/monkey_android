@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import time
-import commands
+import commands,subprocess
 import os
 import sys
 import logging
@@ -16,6 +16,7 @@ if __name__ == '__main__':
 
 from performance.config.config import Config
 from performance.libs.mail import SendMail
+import performance.libs.base as base
 from performance.monkey.monkey_stop import stop_monkey
 
 wkdir = os.getcwd()
@@ -40,7 +41,8 @@ def main(device_id, device_model):
             mail = SendMail()
             mail.send_mail(Config.mail_to_list, mail_content)
             reboot_device(device_id, device_model)
-    except Exception:
+    except Exception as e:
+        logging.error(e)
         time.sleep(3)
     time.sleep(3)
 
@@ -103,7 +105,11 @@ def start_monkey(adb, device_id, device_model, monkey_seed, package_name):
     cmd_monkey = "%s -s %s shell monkey -s %s -p %s --throttle 300 --pct-syskeys 0 --pct-nav 0 --pct-trackball 0 --pct-anyevent 0 -v 400000000 > %s.txt" % (
         adb, device_id, monkey_seed, package_name, log_file_name_with_location)
     # cmd_monkey = "%s -s %s shell monkey -s %s -p %s --pct-touch 10 --pct-motion 10 --pct-appswitch 80 -v 400000000 > %s.txt" %(adb, device_id, monkey_seed, package_name, log_file_name_with_location)
-    status, output = commands.getstatusoutput(cmd_monkey)
+    logging.info(cmd_monkey)
+    if base.is_mac():
+        status, output = commands.getstatusoutput(cmd_monkey)
+    elif base.is_win():
+        output = subprocess.check_output(cmd_monkey, shell=True)
     logging.info("monkey end with %s" % device_model)
     monkey_end_time = time.time()
     monkey_duration = round((monkey_end_time - monkey_start_time) / 3600, 2)
@@ -113,11 +119,17 @@ def start_monkey(adb, device_id, device_model, monkey_seed, package_name):
 def capture_screen(device_id, log_file_name, log_file_name_with_location, monkey_duration):
     logging.info("capture screen")
     cmd_capture = "%s -s %s shell screencap -p /sdcard/%s.png" % (adb, device_id, log_file_name)
-    status, output = commands.getstatusoutput(cmd_capture)
+    if base.is_mac():
+        status, output = commands.getstatusoutput(cmd_capture)
+    elif base.is_win():
+        output = subprocess.check_output(cmd_monkey, shell=True)
     if output == "":
         cmd_pull_screenshot = "%s -s %s pull /sdcard/%s.png %s.png" % (
             adb, device_id, log_file_name, log_file_name_with_location)
-        status, output = commands.getstatusoutput(cmd_pull_screenshot)
+        if base.is_mac():
+            status, output = commands.getstatusoutput(cmd_pull_screenshot)
+        elif base.is_win():
+            output = subprocess.check_output(cmd_pull_screenshot, shell=True)
         logging.info(output)
     # rename log file
     if output == "":
@@ -159,7 +171,11 @@ def deal_with_log(log_file_name_with_location, monkey_duration):
 
 
 def reboot_device(device_id, device_model):
-    status, output = commands.getstatusoutput(adb + ' -s ' + device_id + ' reboot')
+    cmd = "adb + ' -s ' + device_id + ' reboot'"
+    if base.is_mac():
+        status, output = commands.getstatusoutput(cmd)
+    elif base.is_win():
+        output = subprocess.check_output(cmd, shell=True)
     if output == "":
         logging.info("reboot device, please wait 60s")
         count_time = 0
