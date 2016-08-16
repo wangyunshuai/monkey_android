@@ -5,9 +5,10 @@
 2. 支持多个设备
 3. 支持随时断开设备、插入新设备，每5s定时检测设备自动运行
 4. 崩溃后，发送邮件，邮件内容：执行时长、crash log
+5. 支持Windows、Mac系统
 
 ###系统及环境、依赖
-1. 测试环境：Mac OS、Python 2.7.10
+1. 测试环境：Mac OS、Windows 10、Python 2.7.10
 2. 配置 **adb**
 
 ###配置修改
@@ -41,8 +42,9 @@ class Config:
     python /your_location/monkey_android/performance/monkey/monkey_stop.py`
     ```
 3. 或连接一台没有monkey_server 的电脑，执行重启手机
+
     ```shell
-    adb shell reboot
+    adb reboot
     ```
     
 
