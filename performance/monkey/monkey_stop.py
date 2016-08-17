@@ -35,7 +35,7 @@ def stop_monkey_for_mac(device_id, device_model):
             pid = re.search('[0-9]+', output).group()
             logging.info("kill the monkey process: %s in %s" % (pid, device_model))
             status, output = commands.getstatusoutput("%s -s %s shell kill %s" % (adb, device_id, pid))
-    time.sleep(2)
+        time.sleep(2)
 
 def stop_monkey_for_win(device_id, device_model):
     for i in xrange(10):

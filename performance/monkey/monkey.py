@@ -25,6 +25,7 @@ wkdir = os.getcwd()
 adb = Config.adb
 package_name = Config.package_name
 monkey_seed = Config.monkey_seed
+monkey_parameters = Config.monkey_parameters
 
 
 def main(device_id, device_model):
@@ -33,12 +34,11 @@ def main(device_id, device_model):
 
         log_file_name = generate_log_file_name(device_model)
         log_file_name_with_location = generate_log_file_name_with_location(device_model)
-        monkey_duration = start_monkey(adb, device_id, device_model, monkey_seed, package_name)
+        monkey_duration = start_monkey(adb, device_id, device_model, monkey_seed, monkey_parameters, package_name)
         capture_screen(device_id, log_file_name, log_file_name_with_location, monkey_duration)
         mail_content = deal_with_log(log_file_name_with_location, monkey_duration)
         if mail_content == "":
             logging.info("Maybe device lost")
-            pass
         else:
             mail = SendMail()
             mail.send_mail(Config.mail_to_list, mail_content)
@@ -98,12 +98,12 @@ def generate_log_file_name_with_location(device_model):
     return log_file_name_with_location
 
 
-def start_monkey(adb, device_id, device_model, monkey_seed, package_name):
+def start_monkey(adb, device_id, device_model, monkey_seed, monkey_parameters, package_name):
     logging.info("start monkey with %s" % device_model)
     log_file_name_with_location = generate_log_file_name_with_location(device_model)
     monkey_start_time = time.time()
-    cmd_monkey = "%s -s %s shell monkey -s %s -p %s --throttle 300 --pct-syskeys 0 --pct-nav 0 --pct-trackball 0 --pct-anyevent 0 -v 400000000 > %s.txt" % (
-        adb, device_id, monkey_seed, package_name, log_file_name_with_location)
+    cmd_monkey = "%s -s %s shell monkey -s %s -p %s %s > %s.txt" % (
+        adb, device_id, monkey_seed, package_name, monkey_parameters, log_file_name_with_location)
     # cmd_monkey = "%s -s %s shell monkey -s %s -p %s --pct-touch 10 --pct-motion 10 --pct-appswitch 80 -v 400000000 > %s.txt" %(adb, device_id, monkey_seed, package_name, log_file_name_with_location)
     if platform.system() == "Darwin":
         logging.info("Monkey cmd: %s" % cmd_monkey)
@@ -144,15 +144,15 @@ def deal_with_log(log_file_name_with_location, monkey_duration):
     mail_content = ''
     for i in xrange(full_log_lines_number):
         if (exception in full_log[i]) | (anr in full_log[i]):
-            f_crash_log = open(log_file_name_with_location + '.txt', 'w')
+            f_crash_log = open(log_file_name_with_location + '.txt', 'r')
             f_crash_log.close()
             for j in range(i, full_log_lines_number):
                 mail_content = mail_content + full_log[j] + '\r'
-                f_crash_log = open(log_file_name_with_location + '.txt', 'a+')
-                f_crash_log.writelines(full_log[j])
-                f_crash_log.close()
+                # f_crash_log = open(log_file_name_with_location + '.txt', 'a+')
+                # f_crash_log.writelines(full_log[j])
+                # f_crash_log.close()
             break
-    if mail_content == "aaa":
+    if mail_content == "":
         return mail_content
     else:
         # rename log file
@@ -198,3 +198,4 @@ def create_threads_monkey(device_dict):
 
 if __name__ == '__main__':
     pass
+
