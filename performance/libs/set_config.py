@@ -25,6 +25,7 @@ def set_custom_config(config_file):
         config_parser.read(config_file)
         Config.package_name = config_parser.get('config', 'package_name')
         Config.adb_location = config_parser.get('config', 'adb_location')
+        Config.adb = config_parser.get('config', 'adb_location')
         Config.mail_host = config_parser.get('config', 'mail_host')
         Config.mail_user = config_parser.get('config', 'mail_user')
         Config.mail_pass = config_parser.get('config', 'mail_pass')
