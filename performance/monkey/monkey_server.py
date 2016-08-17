@@ -17,8 +17,9 @@ from performance.libs.set_config import set_custom_config
 custom_config = sys.argv
 if len(custom_config) == 1:
     logging.info("Use default config for monkey test")
-    set_custom_config(os.path.join(wkdir, 'performance/user_config/default.conf'))
+    set_custom_config(os.path.join(wkdir, 'user_config/default.conf'))
 elif len(custom_config) == 2:
+    logging.info("Use custom config for monkey test")
     config_file = os.path.join(wkdir, custom_config[1])
     if os.path.exists(config_file) is True:
         set_custom_config(config_file)
