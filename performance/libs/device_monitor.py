@@ -13,10 +13,11 @@ if __name__ == '__main__':
     os.chdir(project_dir[0])    # 将项目所在文件夹设置为 wkdir (目录下必须有 __init__.py 文件)
 
 from performance.config.config import Config
-from performance.libs.base import get_device_info
+from performance.libs.base import get_device_info, start_adb
 from performance.monkey.monkey import create_threads_monkey
 
 def monitor_device():
+    start_adb()
     while True:
         # logging.info("monitor_device")
         time.sleep(5)

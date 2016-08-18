@@ -29,7 +29,6 @@ elif len(custom_config) == 2:
 else:
     logging.info("Only need one conf file, please check command line")
 
-
 from performance.config.config import Config
 from performance.libs.device_monitor import monitor_device
 

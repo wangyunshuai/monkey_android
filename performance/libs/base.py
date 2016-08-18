@@ -5,6 +5,7 @@ import os
 import platform
 import commands
 import sys
+import time
 import logging
 import subprocess
 import traceback
@@ -22,6 +23,13 @@ sys.setdefaultencoding('utf-8')
 
 config = Config()
 adb = config.adb
+
+def start_adb():
+    if platform.system() == 'Windows':
+        subprocess.check_output('adb devices', shell=True)
+    else:
+        commands.getstatusoutput('adb devices')
+    time.sleep(2)
 
 def get_info_from_mac():
     '''返回 device id 和 device model'''
