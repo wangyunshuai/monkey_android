@@ -25,10 +25,11 @@ config = Config()
 adb = config.adb
 
 def start_adb():
+    cmd = "%s devices" % Config.adb
     if platform.system() == 'Windows':
-        subprocess.check_output('adb devices', shell=True)
+        subprocess.check_output(cmd, shell=True)
     else:
-        commands.getstatusoutput('adb devices')
+        commands.getstatusoutput(cmd)
     time.sleep(2)
 
 def get_info_from_mac():

@@ -37,12 +37,11 @@ def main(device_id, device_model):
         monkey_duration = start_monkey(adb, device_id, device_model, monkey_seed, monkey_parameters, package_name)
         capture_screen(device_id, log_file_name, log_file_name_with_location, monkey_duration)
         mail_content = deal_with_log(log_file_name_with_location, monkey_duration)
-        if mail_content == "":
-            logging.info("Maybe device lost")
-        else:
-            mail = SendMail()
-            mail.send_mail(Config.mail_to_list, mail_content)
-            reboot_device(device_id, device_model)
+        mail = SendMail()
+        if mail_content == '':
+            mail_content = 'No crash happened'
+        mail.send_mail(Config.mail_to_list, mail_content)
+        reboot_device(device_id, device_model)
     except Exception:
         traceback.print_exc()
 
@@ -181,7 +180,7 @@ class MonkeyThread(threading.Thread):
         self.device_model = device_model
 
     def run(self):
-        time.sleep(60)
+        time.sleep(6)
         main(self.device_id, self.device_model)
 
 def create_threads_monkey(device_dict):
