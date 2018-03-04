@@ -20,7 +20,7 @@ user_config/default.conf
     ```
     [config]
     package_name = com.testerhome.nativeandroid
-    adb_location = /Users/smzdm/Documents/01_Android/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
+    adb_location = /your_location/android/sdk/platform-tools/adb
 
     # 设置邮箱服务器
     mail_host = smtp.xxxx.com

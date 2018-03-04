@@ -36,9 +36,3 @@ def set_custom_config(config_file):
         for i in monkey_parameters_list:
             monkey_parameters += "%s %s " % (i[0], i[1])
         Config.monkey_parameters = monkey_parameters
-
-if __name__ == '__main__':
-    config_file = "/Users/smzdm/Documents/git/monkey_android/default.conf"
-    set_custom_config(config_file)
-
-
